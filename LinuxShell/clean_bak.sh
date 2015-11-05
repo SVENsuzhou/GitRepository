@@ -23,15 +23,15 @@ declare -i M=0
 for ZONE in `/bin/find $DIR -name \*-$(/bin/date +%Y%m%d)_\*.sql | grep -o record.*- | awk -F '-' '{print $1}' | sort -u`; do
     MYZONE[$M]=$ZONE
     let M=$M+1
-done
+done 
 
 #开始多进程打包
 for ((i=0;i<$M;i++)); do
     read -u 1000
     {
-        cd $DIR
+	cd $DIR
         /bin/find . -name ${MYZONE[$i]}-`/bin/date --date='1 days ago' +%Y%m%d`_\*.sql -exec basename {} \; | sort | xargs tar zcf ${DAYBAK}${MYZONE[$i]}-`/bin/date --date='1 days ago' +%Y%m%d`.tar.gz --remove-files
-        echo >& 1000
+	echo >& 1000
     } &
 done
 wait
@@ -39,7 +39,7 @@ wait
 #获取备份文件的日期
 declare -a MyDate
 declare -i n=0
-for I in `ls $DAYBAK | grep [0-9]*\.tar\.gz | cut -d '.' -f 1 | cut -d '-' -f 2 | sort -u`; do
+for I in `ls $DAYBAK | grep [0-9]*\.tar\.gz | cut -d '.' -f 1 | cut -d '-' -f 2 | sort -u`; do 
     MyDate[$n]=$I
     let n=$n+1
 done
